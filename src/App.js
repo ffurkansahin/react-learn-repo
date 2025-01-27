@@ -1,23 +1,26 @@
-import { createElement } from "react";
+import React from "react";
+import ButtonTest  from "./ButtonTest.js";
+import Tab from "./Tab.js";
+import { useState } from "react";
+
 
 function App() {
-  const knowns = ['csharp','rust','react'] 
-
-  const h1 = createElement('h1',{
-    className: 'red-and-bold',
-    id: 'first-h1'
-  },'fsahin.com')
-
-  const ul = createElement('ul',null,knowns.map(known=> createElement('li',null,known)))
-
-  const main = createElement('main',{
-    className: 'main',
-    id: 'test',
-  },h1,ul)
+  const[activeTab,setActiveTab] = useState(0)
 
   return (
     <>
-    {main}
+    <div style ={{padding:20}}>
+      <button onClick={() => setActiveTab(0)}>go to tab 1</button>
+      <button onClick={() => setActiveTab(1)}>go to tab 2</button>
+      <button onClick={() => setActiveTab(2)}>go to tab 3</button>
+      <Tab activeTab = {activeTab}>
+        <Tab.Panel title = "Profile">1.panel</Tab.Panel>
+        <Tab.Panel title = "About Us">2.panel</Tab.Panel>
+        <Tab.Panel title = "Contact">3.panel</Tab.Panel>
+      </Tab>
+    </div>
+    
+    <ButtonTest text="This is a button"/>
     </>
   );
 }
