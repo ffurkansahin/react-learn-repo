@@ -1,5 +1,9 @@
-import React, { act } from "react"
-import { useState,useReducer } from "react"
+import React from "react"
+import { useMemo } from "react"
+import Header from "./Header"
+import { useState,useReducer,useCallback } from "react"
+import AddTodo from "./AddTodo"
+import Todos from "./Todos"
 
 function Reducer(state,action){
     switch(action.type){
@@ -17,6 +21,11 @@ function Reducer(state,action){
                     action.todo
                 ]
             }
+        case 'SET_SEARCH':
+            return{
+                ...state,
+                search:action.value
+            }    
     }
     
 }
@@ -25,39 +34,49 @@ export default function Todo(){
 
     const [state,dispatch] = useReducer(Reducer,{
         todos:[],
-        todo:''
+        todo:'',
+        search:''
     })
 
-    // const[todos,setTodos] = useState([]);
-    // const[todo,setTodo] = useState()
+    const [count,setCount] = useState(0)
 
-    const handleSubmit = e => {
+    const handleSubmit = useCallback(e => {
         e.preventDefault()
         dispatch({
             type:'SUBMIT_HANDLE',
             todo: state.todo
         })
-    }
+    },[state.todo])
 
-    const onChange = e =>{
+    const onChange = useCallback(e =>{
         dispatch({
             type: 'SET_TODO',
             value: e.target.value
         })
+    },[])
+    
+    const SearchHandle = e =>{
+        dispatch({
+            type:'SET_SEARCH',
+            value: e.target.value
+        })
     }
+
+    const filteredTodos = useMemo(()=>{
+        return state.todos.filter(todo => todo.toLocaleLowerCase("TR").includes(state.search.toLocaleLowerCase("TR")))
+    },[state.todos,state.search])
 
     return(
         <>
+            <Header/>
+            <h4>{count}</h4>
+            <button onClick={()=>{setCount(count=> count +1)}}>Increase</button>
+            <hr></hr>
+            <input type="text" value={state.search} placeholder="Search in todos" onChange={SearchHandle}></input>
+            {state.search}
             <h4>Todo</h4>
-            <form onSubmit={handleSubmit}>
-                <input type='text' value={state.todo} onChange={onChange}></input>
-                <button disabled={!state.todo} type="submit">Ekle</button>
-            </form>
-            <ul>
-                {state.todos.map((todo,index) => (
-                    <li key={index}>{todo}</li>
-                ))}
-            </ul>
+            <AddTodo onChange={onChange} handleSubmit={handleSubmit} state={state}/>
+            <Todos todos={filteredTodos}/>
         </>
     )
 }
