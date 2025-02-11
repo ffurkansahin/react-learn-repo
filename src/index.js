@@ -8,6 +8,8 @@ import ReactDOM from 'react-dom/client';
 // import App5 from './App5'
 import { BrowserRouter } from 'react-router-dom';
 import App6 from './App6'
+import {AuthProvider} from "./context6/AuthContext6"
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,7 +23,9 @@ root.render(
     {/* <Todo/> */}
     {/* <App4/> */}
     {/* <App5></App5> */}
+    <AuthProvider>
     <App6></App6>
+    </AuthProvider>
   </BrowserRouter>
 );
 
